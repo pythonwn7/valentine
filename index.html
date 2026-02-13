@@ -41,17 +41,36 @@
     75% { transform: rotate(5deg); }
     100% { transform: rotate(0deg); }
   }
+
+  #dialogueBox {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff0f5;
+    border: 3px solid #ff6699;
+    border-radius: 15px;
+    padding: 20px 40px;
+    font-size: 22px;
+    color: #ff3366;
+    z-index: 9999;
+    display: none;
+    box-shadow: 0 0 15px rgba(255,50,150,0.5);
+  }
 </style>
 </head>
 <body>
   <h1>Will you be my Valentine? 💖</h1>
+  <div id="dialogueBox"></div>
   <button id="yesBtn">Yes</button>
   <button id="noBtn">No</button>
 
   <script>
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
+    const dialogueBox = document.getElementById('dialogueBox');
     let noClickCount = 0;
+    let chaseStarted = false;
 
     function getButtonSize(btn) {
       const style = getComputedStyle(btn);
@@ -68,6 +87,16 @@
     noBtn.style.top = "250px";
     noBtn.style.left = "60%";
 
+    function showDialogue(text, duration=10000) {
+      dialogueBox.innerHTML = text;
+      dialogueBox.style.display = 'block';
+      if (duration > 0) {
+        setTimeout(() => {
+          dialogueBox.style.display = 'none';
+        }, duration);
+      }
+    }
+
     yesBtn.addEventListener('click', () => {
       alert("Yay! I knew you'd say yes! 💕");
     });
@@ -82,13 +111,34 @@
         yesBtn.style.left = noBtn.style.left;
         noBtn.style.top = yesPos.top;
         noBtn.style.left = yesPos.left;
-      } else if (noClickCount === 2 || noClickCount === 3) {
-        // Teleport on 2nd and 3rd clicks
+
+        showDialogue("I think you pressed the wrong button love... don't worry, I swapped them so you don't get confused again !! ❤️");
+      } else if (noClickCount === 2) {
+        // Teleport
         const size = getButtonSize(noBtn);
         const x = Math.random() * (window.innerWidth - size.width);
         const y = Math.random() * (window.innerHeight - size.height);
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
+
+        showDialogue('Here, I moved the wrong button to the side so you don\'t click it again... it\'s the button that says "yes" if you were unsure. Love you!!');
+      } else if (noClickCount === 3) {
+        // Teleport again to let user approach naturally
+        const size = getButtonSize(noBtn);
+        const x = Math.random() * (window.innerWidth - size.width);
+        const y = Math.random() * (window.innerHeight - size.height);
+        noBtn.style.left = x + "px";
+        noBtn.style.top = y + "px";
+
+        showDialogue("it gets tuah point");
+
+        // Start 30s timer to nag
+        if (!chaseStarted) {
+          chaseStarted = true;
+          setTimeout(() => {
+            showDialogue("PLEASE JUST CLICK YES DEAR", 0); // permanent until page reload
+          }, 30000);
+        }
       }
     });
 
@@ -104,17 +154,17 @@
 
         const size = getButtonSize(noBtn);
 
-        const wiggleRadius = 250; // Wobble starts farther away
-        const fleeRadius = 180;   // Run starts when closer
+        const wiggleRadius = 250; // Wobble starts farther
+        const fleeRadius = 180;   // Run starts closer
 
-        // Wobble if cursor is inside wiggle radius
+        // Wobble only when cursor is in wiggle radius
         if (distance < wiggleRadius) {
           noBtn.style.animation = "wiggle 0.3s infinite";
         } else {
           noBtn.style.animation = "";
         }
 
-        // Move away if cursor is inside flee radius
+        // Run if cursor is inside flee radius
         if (distance < fleeRadius) {
           const moveX = (dx / distance) * 50;
           const moveY = (dy / distance) * 50;
