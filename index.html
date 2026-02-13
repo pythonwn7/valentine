@@ -13,14 +13,14 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* move content up */
+    justify-content: flex-start;
     align-items: center;
-    padding-top: 50px; /* push title down a bit from top */
+    padding-top: 50px;
   }
   h1 {
     color: #ff3366;
     font-size: 70px;
-    margin-bottom: 150px; /* leave room for buttons */
+    margin-bottom: 150px;
   }
   button {
     font-size: 35px;
@@ -31,7 +31,7 @@
     color: white;
     cursor: pointer;
     position: absolute;
-    transition: all 0.3s ease;
+    transition: top 0.1s ease, left 0.1s ease; /* smooth movement */
   }
 </style>
 </head>
@@ -68,7 +68,7 @@
         noBtn.style.top = yesPos.top;
         noBtn.style.left = yesPos.left;
       } else if (noClickCount === 2) {
-        // Teleport to random position
+        // Teleport to random position once
         const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
         const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
         noBtn.style.left = x + "px";
@@ -76,13 +76,32 @@
       }
     });
 
-    // Make No button dodge cursor after 3rd click
-    noBtn.addEventListener('mousemove', (e) => {
+    // Smooth chasing after 3rd click
+    document.addEventListener('mousemove', (e) => {
       if (noClickCount >= 3) {
-        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
+        const btnRect = noBtn.getBoundingClientRect();
+        const btnX = btnRect.left + btnRect.width / 2;
+        const btnY = btnRect.top + btnRect.height / 2;
+
+        const dx = btnX - e.clientX;
+        const dy = btnY - e.clientY;
+        const distance = Math.sqrt(dx*dx + dy*dy);
+
+        // Only move if cursor is close
+        if (distance < 150) {
+          const moveX = (dx / distance) * 20; // 20px per move step
+          const moveY = (dy / distance) * 20;
+
+          let newLeft = btnRect.left + moveX;
+          let newTop = btnRect.top + moveY;
+
+          // Keep button inside window
+          newLeft = Math.max(0, Math.min(window.innerWidth - noBtn.offsetWidth, newLeft));
+          newTop = Math.max(0, Math.min(window.innerHeight - noBtn.offsetHeight, newTop));
+
+          noBtn.style.left = newLeft + "px";
+          noBtn.style.top = newTop + "px";
+        }
       }
     });
   </script>
