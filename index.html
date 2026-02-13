@@ -18,12 +18,12 @@
   }
 
   /* --- Intro sequence --- */
- #intro {
+#intro {
   display: flex;
   flex-direction: column;
-  justify-content: center;  /* vertical centering */
-  align-items: center;      /* horizontal centering */
-  gap: 50px;                /* space between text and button */
+  justify-content: center; /* centers content vertically */
+  align-items: center;     /* centers horizontally */
+  height: 100vh;           /* take full viewport height */
 }
 
 #introText {
@@ -34,6 +34,7 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 50px;     /* space below text for button */
 }
 
   .fadeWord {
@@ -44,14 +45,14 @@
   }
 
   #nextBtn {
-    font-size: 30px;
-    padding: 15px 40px;
-    border-radius: 20px;
-    border: 4px solid #ff99bb;
-    background: #ff6699;
-    color: white;
-    cursor: pointer;
-  }
+  font-size: 30px;
+  padding: 15px 40px;
+  border-radius: 20px;
+  border: 4px solid #ff99bb;
+  background: #ff6699;
+  color: white;
+  cursor: pointer;
+}
 
   /* --- Original Valentine page hidden initially --- */
   #mainContent {
@@ -307,4 +308,5 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
 
