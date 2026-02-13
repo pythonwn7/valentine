@@ -17,7 +17,6 @@
     align-items: center;
   }
 
-  /* --- Intro sequence --- */
   #intro {
     display: flex;
     flex-direction: column;
@@ -55,7 +54,6 @@
     margin-top: 300px;
   }
 
-  /* --- Original Valentine page hidden initially --- */
   #mainContent {
     display: none;
     position: relative;
@@ -120,7 +118,6 @@
     100% { transform: rotate(0deg); }
   }
 
-  /* Celebration text fade */
   #celebrationText .fadeWord {
     opacity: 0;
     margin: 0 3px;
@@ -131,13 +128,11 @@
 </head>
 <body>
 
-<!-- Intro Sequence -->
 <div id="intro">
   <div id="introText"></div>
   <button id="nextBtn">Next</button>
 </div>
 
-<!-- Original Valentine content -->
 <div id="mainContent">
   <h1>Will you be my Valentine? 💖</h1>
   <div id="dialogueBox"></div>
@@ -146,7 +141,6 @@
   <button id="noBtn">No</button>
 </div>
 
-<!-- Celebration screen -->
 <div id="celebration" style="display:none; flex-direction:column; justify-content:center; align-items:center; height:100vh; width:100%; position:fixed; top:0; left:0; background:#ffe6f0; overflow:auto; text-align:center; z-index:9999;">
   <div id="celebrationText" style="color:#ff3366; font-size:50px; line-height:1.2; max-width:90%; display:flex; flex-wrap:wrap; justify-content:center;"></div>
   <canvas id="confettiCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
@@ -313,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- Confetti function ---
   function startConfetti() {
     const canvas = document.getElementById('confettiCanvas');
     const ctx = canvas.getContext('2d');
