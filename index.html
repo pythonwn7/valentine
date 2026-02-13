@@ -17,11 +17,30 @@
     align-items: center;
   }
 
+  /* --- Intro sequence --- */
+  #intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
   #introText {
     color: #ff3366;
     font-size: 60px;
-    margin-bottom: 100px;
-    max-width: 80%;
+    max-width: 90%;
+    line-height: 1.3;
+    margin-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .fadeWord {
+    opacity: 0;
+    margin: 0 5px;
+    display: inline-block;
+    transition: opacity 0.5s ease;
   }
 
   #nextBtn {
@@ -34,7 +53,7 @@
     cursor: pointer;
   }
 
-  /* Original page elements hidden initially */
+  /* --- Original Valentine page hidden initially --- */
   #mainContent {
     display: none;
     position: relative;
@@ -90,23 +109,33 @@
     z-index: 99999;
     text-shadow: 5px 5px 15px white;
   }
+
+  /* Wiggle animation for No button */
+  @keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
 </style>
 </head>
 <body>
-  <!-- Intro Sequence -->
-  <div id="intro">
-    <div id="introText">hiiii neha</div>
-    <button id="nextBtn">Next</button>
-  </div>
 
-  <!-- Original Valentine content -->
-  <div id="mainContent">
-    <h1>Will you be my Valentine? 💖</h1>
-    <div id="dialogueBox"></div>
-    <div id="stopFlash">STOP</div>
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
-  </div>
+<!-- Intro Sequence -->
+<div id="intro">
+  <div id="introText"></div>
+  <button id="nextBtn">Next</button>
+</div>
+
+<!-- Original Valentine content -->
+<div id="mainContent">
+  <h1>Will you be my Valentine? 💖</h1>
+  <div id="dialogueBox"></div>
+  <div id="stopFlash">STOP</div>
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -131,15 +160,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const introDiv = document.getElementById('intro');
   const mainContent = document.getElementById('mainContent');
 
+  function showTextWithFade(text) {
+    introTextEl.innerHTML = "";
+    const words = text.split(" ");
+    words.forEach((word, i) => {
+      const span = document.createElement('span');
+      span.className = 'fadeWord';
+      span.textContent = word;
+      introTextEl.appendChild(span);
+      setTimeout(() => {
+        span.style.opacity = 1;
+      }, i * 200); // stagger each word
+    });
+  }
+
+  showTextWithFade(introTexts[index]);
+
   nextBtn.addEventListener('click', () => {
     index++;
     if (index < introTexts.length) {
-      introTextEl.textContent = introTexts[index];
+      showTextWithFade(introTexts[index]);
     } else {
-      // Remove intro button and show main content
+      // Remove intro and show main content
       introDiv.style.display = 'none';
       mainContent.style.display = 'block';
-      initValentine(); // Start your original Yes/No page
+      initValentine();
     }
   });
 
@@ -160,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return { width: btn.offsetWidth + borderX, height: btn.offsetHeight + borderY };
     }
 
-    // Initialize button positions
     yesBtn.style.top = "300px";
     yesBtn.style.left = "30%";
     noBtn.style.top = "300px";
@@ -190,19 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function startChase() {
       if (!chaseStarted) {
         chaseStarted = true;
-        showDialogue("it gets tuah point"); // first permanent message
+        showDialogue("it gets tuah point");
         setTimeout(() => {
           showDialogue("PLEASE JUST CLICK YES DEAR", 0);
         }, 30000);
       }
     }
 
-    // Yes button click
     yesBtn.addEventListener('click', () => {
       alert("Yay! I knew you'd say yes! 💕");
     });
 
-    // No button click
     noBtn.addEventListener('click', () => {
       noClickCount++;
 
@@ -229,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Mousemove for gradual fleeing
     document.addEventListener('mousemove', (e) => {
       if (!chaseStarted) return;
 
