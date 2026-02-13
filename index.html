@@ -26,12 +26,25 @@
     font-size: 35px;
     padding: 25px 50px;
     border-radius: 20px;
-    border: none;
+    border: 4px solid #ff99bb; /* border included in positioning */
     background: #ff6699;
     color: white;
     cursor: pointer;
     position: absolute;
-    transition: top 0.1s ease, left 0.1s ease; /* smooth movement */
+    transition: top 0.05s ease, left 0.05s ease; /* fast smooth movement */
+  }
+
+  /* Wiggle animation for No button */
+  @keyframes wiggle {
+    0% { transform: rotate(0deg); }
+    25% { transform: rotate(5deg); }
+    50% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+    100% { transform: rotate(0deg); }
+  }
+
+  .wiggle {
+    animation: wiggle 0.3s infinite;
   }
 </style>
 </head>
@@ -44,6 +57,17 @@
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
     let noClickCount = 0;
+
+    // Get button border width for safe positioning
+    function getButtonSize(btn) {
+      const style = getComputedStyle(btn);
+      const borderX = parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+      const borderY = parseFloat(style.borderTopWidth) + parseFloat(style.borderBottomWidth);
+      return {
+        width: btn.offsetWidth + borderX,
+        height: btn.offsetHeight + borderY
+      };
+    }
 
     // Initial positions
     yesBtn.style.top = "250px";
@@ -69,10 +93,14 @@
         noBtn.style.left = yesPos.left;
       } else if (noClickCount === 2) {
         // Teleport to random position once
-        const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
-        const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+        const size = getButtonSize(noBtn);
+        const x = Math.random() * (window.innerWidth - size.width);
+        const y = Math.random() * (window.innerHeight - size.height);
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
+      } else if (noClickCount >= 3) {
+        // Start wiggle
+        noBtn.classList.add('wiggle');
       }
     });
 
@@ -87,17 +115,18 @@
         const dy = btnY - e.clientY;
         const distance = Math.sqrt(dx*dx + dy*dy);
 
-        // Only move if cursor is close
         if (distance < 200) {
-          const moveX = (dx / distance) * 40; // 40px per move step
-          const moveY = (dy / distance) * 40;
+          const moveX = (dx / distance) * 50; // faster, hard to catch
+          const moveY = (dy / distance) * 50;
+
+          const size = getButtonSize(noBtn);
 
           let newLeft = btnRect.left + moveX;
           let newTop = btnRect.top + moveY;
 
-          // Keep button inside window
-          newLeft = Math.max(0, Math.min(window.innerWidth - noBtn.offsetWidth, newLeft));
-          newTop = Math.max(0, Math.min(window.innerHeight - noBtn.offsetHeight, newTop));
+          // Keep button fully inside window including border
+          newLeft = Math.max(0, Math.min(window.innerWidth - size.width, newLeft));
+          newTop = Math.max(0, Math.min(window.innerHeight - size.height, newTop));
 
           noBtn.style.left = newLeft + "px";
           noBtn.style.top = newTop + "px";
@@ -107,4 +136,3 @@
   </script>
 </body>
 </html>
-
