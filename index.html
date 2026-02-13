@@ -13,17 +13,18 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* move content up */
     align-items: center;
+    padding-top: 50px; /* push title down a bit from top */
   }
   h1 {
     color: #ff3366;
-    font-size: 70px; /* Much bigger */
-    margin-bottom: 100px;
+    font-size: 70px;
+    margin-bottom: 150px; /* leave room for buttons */
   }
   button {
-    font-size: 35px; /* Much bigger */
-    padding: 25px 50px; 
+    font-size: 35px;
+    padding: 25px 50px;
     border-radius: 20px;
     border: none;
     background: #ff6699;
@@ -45,9 +46,9 @@
     let noClickCount = 0;
 
     // Initial positions
-    yesBtn.style.top = "50%";
+    yesBtn.style.top = "250px";
     yesBtn.style.left = "30%";
-    noBtn.style.top = "50%";
+    noBtn.style.top = "250px";
     noBtn.style.left = "60%";
 
     // Yes button click
@@ -60,7 +61,7 @@
       noClickCount++;
 
       if (noClickCount === 1) {
-        // Swap with yes button after first click
+        // Swap with yes button
         const yesPos = {top: yesBtn.style.top, left: yesBtn.style.left};
         yesBtn.style.top = noBtn.style.top;
         yesBtn.style.left = noBtn.style.left;
@@ -72,15 +73,18 @@
         const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
-      } else {
-        // Move away from cursor
+      }
+    });
+
+    // Make No button dodge cursor after 3rd click
+    noBtn.addEventListener('mousemove', (e) => {
+      if (noClickCount >= 3) {
         const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
         const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
         noBtn.style.left = x + "px";
         noBtn.style.top = y + "px";
       }
     });
-
   </script>
 </body>
 </html>
