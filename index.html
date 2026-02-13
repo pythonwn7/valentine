@@ -63,7 +63,6 @@
       };
     }
 
-    // Initial positions
     yesBtn.style.top = "250px";
     yesBtn.style.left = "30%";
     noBtn.style.top = "250px";
@@ -83,15 +82,8 @@
         yesBtn.style.left = noBtn.style.left;
         noBtn.style.top = yesPos.top;
         noBtn.style.left = yesPos.left;
-      } else if (noClickCount === 2) {
-        // Teleport
-        const size = getButtonSize(noBtn);
-        const x = Math.random() * (window.innerWidth - size.width);
-        const y = Math.random() * (window.innerHeight - size.height);
-        noBtn.style.left = x + "px";
-        noBtn.style.top = y + "px";
-      } else if (noClickCount === 3) {
-        // Teleport again to allow natural approach
+      } else if (noClickCount === 2 || noClickCount === 3) {
+        // Teleport on 2nd and 3rd clicks
         const size = getButtonSize(noBtn);
         const x = Math.random() * (window.innerWidth - size.width);
         const y = Math.random() * (window.innerHeight - size.height);
@@ -112,26 +104,24 @@
 
         const size = getButtonSize(noBtn);
 
-        // Wobble radius smaller than flee radius
-        const wobbleRadius = 180;
-        const fleeRadius = 250;
+        const wiggleRadius = 250; // Wobble starts farther away
+        const fleeRadius = 180;   // Run starts when closer
 
-        if (distance < wobbleRadius) {
-          // Only wiggle visually
+        // Wobble if cursor is inside wiggle radius
+        if (distance < wiggleRadius) {
           noBtn.style.animation = "wiggle 0.3s infinite";
         } else {
           noBtn.style.animation = "";
         }
 
+        // Move away if cursor is inside flee radius
         if (distance < fleeRadius) {
-          // Move away smoothly
-          const moveX = (dx / distance) * 50; 
+          const moveX = (dx / distance) * 50;
           const moveY = (dy / distance) * 50;
 
           let newLeft = btnRect.left + moveX;
           let newTop = btnRect.top + moveY;
 
-          // Keep fully inside window
           newLeft = Math.max(0, Math.min(window.innerWidth - size.width, newLeft));
           newTop = Math.max(0, Math.min(window.innerHeight - size.height, newTop));
 
