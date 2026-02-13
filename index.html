@@ -53,13 +53,13 @@
     top: 500px;
     left: 50%;
     transform: translateX(-50%);
-    background: white;          /* white background */
+    background: white;          
     border: 3px solid #ff6699;
     border-radius: 15px;
     padding: 20px 40px;
     font-size: 22px;
-    font-family: 'Arial', sans-serif; /* new font */
-    color: black;               /* black text */
+    font-family: 'Arial', sans-serif;
+    color: black;
     z-index: 9999;
     display: none;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -97,7 +97,7 @@
 
     // --- State variables ---
     let noClickCount = 0;       // tracks how many times "No" was clicked
-    let chaseStarted = false;   // whether the fleeing behavior has started
+    let chaseStarted = false;   // whether fleeing behavior has started
 
     // --- Utility to get button size including borders ---
     function getButtonSize(btn) {
@@ -145,9 +145,20 @@
       noBtn.style.top = y + "px";
     }
 
+    // --- Start chase behavior after third teleport ---
+    function startChase() {
+      if (!chaseStarted) {
+        chaseStarted = true;
+        // 30s nag popup
+        setTimeout(() => {
+          showDialogue("PLEASE JUST CLICK YES DEAR", 0); // permanent
+        }, 30000);
+      }
+    }
+
     // --- No button click behavior ---
     noBtn.addEventListener('click', () => {
-      if (noClickCount < 3) {
+      if (noClickCount < 4) { // allow 3 teleports + start chase
         noClickCount++;
 
         if (noClickCount === 1) {
@@ -166,64 +177,51 @@
         } else if (noClickCount === 3) {
           teleportNoButton();
           showDialogue("it gets tuah point");
-
-          if (!chaseStarted) {
-            chaseStarted = true;
-            // 30s nag popup
-            setTimeout(() => {
-              showDialogue("PLEASE JUST CLICK YES DEAR", 0); // permanent until reload
-            }, 30000);
-          }
+          startChase();
         }
 
       } else {
-        // Extra clicks after third
+        // Extra clicks after third teleport / chase started
         flashStop();
       }
     });
 
     // --- Mousemove handler for fleeing behavior ---
     document.addEventListener('mousemove', (e) => {
-      if (noClickCount >= 3) {
-        const btnRect = noBtn.getBoundingClientRect();
-        const btnX = btnRect.left + btnRect.width / 2;
-        const btnY = btnRect.top + btnRect.height / 2;
+      if (!chaseStarted) return; // only start fleeing after 3 teleports
 
-        const dx = btnX - e.clientX;
-        const dy = btnY - e.clientY;
-        const distance = Math.sqrt(dx*dx + dy*dy);
+      const btnRect = noBtn.getBoundingClientRect();
+      const btnX = btnRect.left + btnRect.width / 2;
+      const btnY = btnRect.top + btnRect.height / 2;
 
-        const size = getButtonSize(noBtn);
+      const dx = btnX - e.clientX;
+      const dy = btnY - e.clientY;
+      const distance = Math.sqrt(dx*dx + dy*dy);
 
-        const wiggleRadius = 250; // cursor distance to start wobbling
-        const fleeRadius = 180;   // cursor distance to start fleeing
+      const size = getButtonSize(noBtn);
 
-        // Wobble animation
-        noBtn.style.animation = (distance < wiggleRadius) ? "wiggle 0.3s infinite" : "";
+      const wiggleRadius = 250; // distance where wobble starts
+      const fleeRadius = 180;   // distance where flee starts
 
-        // Gradual flee
-        if (distance < fleeRadius) {
-          const moveX = (dx / distance) * 50;
-          const moveY = (dy / distance) * 50;
+      // Wobble animation
+      noBtn.style.animation = (distance < wiggleRadius) ? "wiggle 0.3s infinite" : "";
 
-          let newLeft = btnRect.left + moveX;
-          let newTop = btnRect.top + moveY;
+      // Gradual flee
+      if (distance < fleeRadius) {
+        const moveX = (dx / distance) * 50;
+        const moveY = (dy / distance) * 50;
 
-          // Keep inside window
-          newLeft = Math.max(0, Math.min(window.innerWidth - size.width, newLeft));
-          newTop = Math.max(0, Math.min(window.innerHeight - size.height, newTop));
+        let newLeft = btnRect.left + moveX;
+        let newTop = btnRect.top + moveY;
 
-          noBtn.style.left = newLeft + "px";
-          noBtn.style.top = newTop + "px";
-        }
+        // Keep inside window bounds
+        newLeft = Math.max(0, Math.min(window.innerWidth - size.width, newLeft));
+        newTop = Math.max(0, Math.min(window.innerHeight - size.height, newTop));
+
+        noBtn.style.left = newLeft + "px";
+        noBtn.style.top = newTop + "px";
       }
     });
   </script>
 </body>
 </html>
-
-
-
-
-
-
