@@ -120,12 +120,32 @@
     100% { transform: rotate(0deg); }
   }
 
-  /* Celebration text fade */
-  #celebrationText .fadeWord {
-    opacity: 0;
-    margin: 0 3px;
-    display: inline-block;
-    transition: opacity 0.3s ease;
+  /* Celebration text typewriter */
+  #celebrationText {
+    color: #ff3366;
+    font-size: 50px;
+    line-height: 1.2;
+    max-width: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    white-space: pre-wrap;
+  }
+
+  #celebration {
+    display:none;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    width:100%;
+    position:fixed;
+    top:0;
+    left:0;
+    background:#ffe6f0;
+    overflow:auto;
+    text-align:center;
+    z-index:9999;
   }
 </style>
 </head>
@@ -147,9 +167,9 @@
 </div>
 
 <!-- Celebration screen -->
-<div id="celebration" style="display:none; flex-direction:column; justify-content:center; align-items:center; height:100vh; width:100%; position:fixed; top:0; left:0; background:#ffe6f0; overflow:auto; text-align:center; z-index:9999;">
-  <div id="celebrationText" style="color:#ff3366; font-size:50px; line-height:1.2; max-width:90%; display:flex; flex-wrap:wrap; justify-content:center;"></div>
-  <canvas id="confettiCanvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+<div id="celebration">
+  <div id="celebrationText"></div>
+  <canvas id="confettiCanvas"></canvas>
 </div>
 
 <script>
@@ -183,9 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
       span.className = 'fadeWord';
       span.textContent = word;
       container.appendChild(span);
-      setTimeout(() => {
-        span.style.opacity = 1;
-      }, i * delay);
+      setTimeout(() => { span.style.opacity = 1; }, i*delay);
     });
   }
 
@@ -248,9 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!chaseStarted) {
         chaseStarted = true;
         showDialogue("it gets tuah point");
-        setTimeout(() => {
-          showDialogue("PLEASE JUST CLICK YES DEAR", 0);
-        }, 30000);
+        setTimeout(() => { showDialogue("PLEASE JUST CLICK YES DEAR", 0); }, 30000);
       }
     }
 
@@ -260,8 +276,24 @@ document.addEventListener('DOMContentLoaded', () => {
       const celebrationTextEl = document.getElementById('celebrationText');
       celebrationDiv.style.display = 'flex';
       
-      const text = "YAYYYYYYY IM SO HAPPY I LOVE YOU SO MUCH DEAR HAPPY VALENTINES DAY I CAN'T WAIT TO SEE YOU MY LOVE MWAH MWAH MWAH MWAH MWAH MWAH MWAH MWAH 💋💋💋💖💖💖😘😘😘mwahmwahwmwhamwhwamwhwamwh❤️❤️❤️💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋imgoingtoeatyou😋😋😋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋";
-      showTextWithFade(text, celebrationTextEl, 150);
+      const text = "YAYYYYYYY IM SO HAPPY I LOVE YOU SO MUCH DEAR HAPPY VALENTINES DAY I CAN'T WAIT TO SEE YOU MY LOVE MWAH MWAH MWAH MWAH MWAH MWAH MWAH MWAH 💋💋💋💖💖💖😘😘😘mwahmwahwmwhamwhwamwhwamwh❤️❤️❤️💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋imgoingtoeatyou😋😋😋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋💋";
+      
+      // Typewriter fade character by character
+      let i = 0;
+      function typeChar() {
+        if (i < text.length) {
+          const span = document.createElement('span');
+          span.textContent = text[i];
+          span.style.opacity = 0;
+          celebrationTextEl.appendChild(span);
+          setTimeout(()=>{ span.style.opacity = 1; }, 50);
+          i++;
+          setTimeout(typeChar, 50); // next char
+          // auto scroll to bottom so emojis overflow
+          celebrationTextEl.parentNode.scrollTop = celebrationTextEl.parentNode.scrollHeight;
+        }
+      }
+      typeChar();
       startConfetti();
     });
 
@@ -367,8 +399,8 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.height = window.innerHeight;
     });
   }
+
 });
 </script>
 </body>
 </html>
-
